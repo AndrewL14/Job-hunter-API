@@ -1,6 +1,7 @@
 package jobs.search.JobHunter.controller;
 
-import jobs.search.JobHunter.DTO.JobPostDTO;
+import jobs.search.JobHunter.DTO.request.UpdateJobRequest;
+import jobs.search.JobHunter.DTO.response.JobPostDTO;
 import jobs.search.JobHunter.entity.JobPost;
 import jobs.search.JobHunter.service.JobPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +26,9 @@ public class JobPostController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<JobPostDTO> updateJobPost(@RequestBody JobPost post) {
+    public ResponseEntity<JobPostDTO> updateJobPost(@RequestBody UpdateJobRequest request) {
         return new ResponseEntity<JobPostDTO>(
-                service.updateJobPost(post), HttpStatus.OK
+                service.updateJobPost(request), HttpStatus.OK
         );
     }
 
