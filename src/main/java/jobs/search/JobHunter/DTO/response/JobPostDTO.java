@@ -1,4 +1,4 @@
-package jobs.search.JobHunter.DTO;
+package jobs.search.JobHunter.DTO.response;
 
 import java.util.List;
 
