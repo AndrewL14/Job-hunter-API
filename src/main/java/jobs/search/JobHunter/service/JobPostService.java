@@ -1,6 +1,8 @@
 package jobs.search.JobHunter.service;
 
-import jobs.search.JobHunter.DTO.JobPostDTO;
+import com.mongodb.client.result.UpdateResult;
+import jobs.search.JobHunter.DTO.request.UpdateJobRequest;
+import jobs.search.JobHunter.DTO.response.JobPostDTO;
 import jobs.search.JobHunter.converter.CustomConverter;
 import jobs.search.JobHunter.entity.JobPost;
 import jobs.search.JobHunter.exception.JobPostNotFoundException;
@@ -27,19 +29,20 @@ public class JobPostService {
     @Autowired
     private MongoTemplate template;
 
-    public JobPostDTO updateJobPost(JobPost post) {
-        Query query = new Query(Criteria.where("imbdId").is(post.getImbdId()));
+    public JobPostDTO updateJobPost(UpdateJobRequest request) {
+        if (request == null) throw new NullPointerException("request is null");
+        Query query = new Query(Criteria.where("imbdId").is(request.imdbId()));
+        Update update = new Update();
 
-        Update update = new Update()
-                .set("profile", post.getProfile())
-                .set("description", post.getDescription())
-                .set("experience", post.getExperience())
-                .set("skills", post.getSkills());
+        if (!request.profile().isEmpty()) update.set("profile", request.profile());
+        if (!request.description().isEmpty()) update.set("description", request.description());
+        if (request.experience() != null) update.set("experience", request.experience());
+        if (!request.skills().isEmpty()) update.set("skills", request.skills());
 
         template.updateFirst(query, update, JobPost.class);
 
-        return new JobPostDTO(post.getImbdId(), post.getProfile(),
-                post.getDescription(), post.getExperience(), post.getSkills());
+        return new JobPostDTO(request.imdbId(), request.profile(),
+                request.description(), request.experience(), request.skills());
     }
 
     public List<JobPostDTO> fetchAllJobPost() {
